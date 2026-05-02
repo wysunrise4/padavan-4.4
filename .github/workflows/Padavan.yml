@@ -100,3 +100,17 @@ jobs:
       with:
         name: Padavan-packages
         path: /opt/images
+
+    - name: Set Release Date (Asia/Shanghai) 
+      id: date 
+      run: echo "::set-output name=date::$(TZ=Asia/Shanghai date +'%Y%m%d-%H%M')" 
+
+    - name: Upload Firmware to Release 
+      uses: svenstaro/upload-release-action@v2 
+      with: 
+        repo_token: ${{ secrets.GITHUB_TOKEN }} 
+        file: /opt/images/*.trx 
+        tag: ${{ env.TNAME }}-${{ steps.date.outputs.date }} 
+        release_name: "${{ env.TNAME }} Build ${{ steps.date.outputs.date }}"
+        overwrite: true 
+        file_glob: true 
